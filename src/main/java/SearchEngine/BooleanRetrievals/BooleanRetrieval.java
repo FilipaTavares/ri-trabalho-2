@@ -37,4 +37,6 @@ public abstract class BooleanRetrieval {
     public void setScoringAlgorithm(ScoringAlgorithm scoringAlgorithm) {
         this.scoringAlgorithm = scoringAlgorithm;
     }
+
+    public void reset(){ this.results.clear(); }
 }

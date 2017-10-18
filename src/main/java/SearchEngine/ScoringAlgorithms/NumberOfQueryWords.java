@@ -13,7 +13,7 @@ public class NumberOfQueryWords implements ScoringAlgorithm {
     public Query computeScores(int query_id, List<Posting> postings) {
         Query query = new Query(query_id);
 
-        postings.forEach(posting ->  query.increaseDocScore(posting.getDocID(), posting.getTermFreq()) );
+        postings.forEach(posting ->  query.increaseDocScore(posting.getDocID(), 1));
 
         return query;
     }

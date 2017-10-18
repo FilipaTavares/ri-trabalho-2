@@ -22,8 +22,8 @@ public class Query {
         return doc_scores;
     }
 
-    public void increaseDocScore(int docID, int termFreq) {
-        doc_scores.put(docID, doc_scores.containsKey(docID) ? doc_scores.get(docID) + termFreq : termFreq);
+    public void increaseDocScore(int docID, int number) {
+        doc_scores.put(docID, doc_scores.containsKey(docID) ? doc_scores.get(docID) + number : number);
     }
 
     @Override

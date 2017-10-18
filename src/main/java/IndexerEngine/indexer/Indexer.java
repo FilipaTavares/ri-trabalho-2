@@ -87,7 +87,7 @@ public class Indexer {
      *
      * @param filename output file name
      */
-    public void saveToFile(String filename) {
+    public void saveToFile(String filename, String tokenizerName) {
         try {
 
             OutputStreamWriter streamWriter = new OutputStreamWriter(new FileOutputStream(filename),
@@ -95,6 +95,8 @@ public class Indexer {
             BufferedWriter writer = new BufferedWriter(streamWriter);
 
             List<String> orderedKeys = invertedIndex.keySet().stream().sorted().collect(Collectors.toList());
+
+            writer.write(tokenizerName + "\n");
 
             for (String key : orderedKeys) {
 

@@ -17,11 +17,12 @@ public class BooleanRetrievalOR extends BooleanRetrieval {
     public void retrieve(int query_id, String query) {
         List<String> terms = tokenizer.tokenize(query);
         List<Posting> allPostings = new LinkedList<>();
+        //alterar
         terms.forEach(term -> {
             if (indexer.getTermPostings(term) != null)
                 allPostings.addAll(indexer.getTermPostings(term));
-
         });
+
         results.add(scoringAlgorithm.computeScores(query_id, allPostings));
     }
 

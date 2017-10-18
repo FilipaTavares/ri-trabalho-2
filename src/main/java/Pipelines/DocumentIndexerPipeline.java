@@ -37,7 +37,7 @@ public class DocumentIndexerPipeline implements Pipeline{
             }
         }
 
-        indexer.saveToFile(outputFileName);
+        indexer.saveToFile(outputFileName, tokenizer.getClass().getSimpleName());
         System.out.println("Indexer size: " + indexer.size() + "\n");
 
         System.out.println("List of ten first terms that appear in only one document");

@@ -3,20 +3,33 @@ package SearchEngine.IndexReader;
 import IndexerEngine.indexer.Indexer;
 import IndexerEngine.indexer.Posting;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
 public class IndexReader {
+    private String tokenizerName;
+
+    public String getTokenizerName() {
+        return tokenizerName;
+    }
 
     public Indexer readIndex(String filename) {
         Indexer indexer = new Indexer();
 
-        try {
-            Files.lines(Paths.get(filename)).forEach((String line) -> {
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(filename)))){
+        String line;
 
+            if ((line = reader.readLine()) != null)
+                tokenizerName = line.trim();
+
+            while ((line = reader.readLine()) != null) {
                 String[] s = line.split("[ ,]");
                 String term = s[0];
                 List<Posting> postings = new LinkedList<>();
@@ -30,6 +43,7 @@ public class IndexReader {
                         termFreq = Integer.parseInt(split[1]);
                     } catch (NumberFormatException e) {
                         System.err.println("Error processing posting from file");
+                        System.out.println(Arrays.toString(split));
                         continue;
                     }
 
@@ -37,8 +51,7 @@ public class IndexReader {
                 }
 
                 indexer.addToIndex(term, postings);
-            });
-
+            }
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -46,5 +59,5 @@ public class IndexReader {
 
         return indexer;
     }
-
 }
+
