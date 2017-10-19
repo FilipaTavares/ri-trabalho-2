@@ -20,12 +20,6 @@ public abstract class BooleanRetrieval {
 
     public abstract void saveToFile(String filename);
 
-    /*
-    public Map<Query, Integer> getResults() {
-        return Collections.unmodifiableMap(results);
-    }
-    */
-
     public void setIndexer(Indexer indexer) {
         this.indexer = indexer;
     }
@@ -37,6 +31,4 @@ public abstract class BooleanRetrieval {
     public void setScoringAlgorithm(ScoringAlgorithm scoringAlgorithm) {
         this.scoringAlgorithm = scoringAlgorithm;
     }
-
-    public void reset(){ this.results.clear(); }
 }

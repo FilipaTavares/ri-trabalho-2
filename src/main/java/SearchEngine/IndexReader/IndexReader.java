@@ -24,7 +24,7 @@ public class IndexReader {
         Indexer indexer = new Indexer();
 
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(filename)))){
-        String line;
+            String line;
 
             if ((line = reader.readLine()) != null)
                 tokenizerName = line.trim();

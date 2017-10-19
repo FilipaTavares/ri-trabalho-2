@@ -23,6 +23,8 @@ public class DocumentIndexer {
     public static void main(String[] args) throws IOException {
         long start = System.currentTimeMillis();
 
+        //ALTERAR PARA TER HELP E MOSTRAR NOMES DE TOKENIZERS
+
         if (args.length != 3) {
             System.err.println("REQUIRED ARGUMENTS: <directoryForFiles> <tokenizerClassName> " +
                     "<outputFile>");

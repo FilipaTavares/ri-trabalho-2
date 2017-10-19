@@ -1,33 +1,29 @@
 package SearchEngine.BooleanRetrievals;
 
 import IndexerEngine.indexer.Posting;
-
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 
-public class BooleanRetrievalOR extends BooleanRetrieval {
+public class DisjunctiveBooleanRetrieval extends BooleanRetrieval {
 
     @Override
     public void retrieve(int query_id, String query) {
         List<String> terms = tokenizer.tokenize(query);
-        List<Posting> allPostings = new LinkedList<>();
-        //alterar
-        terms.forEach(term -> {
+        List<Posting> allPostings = new ArrayList<>();
+
+        for(String term : terms) {
             if (indexer.getTermPostings(term) != null)
                 allPostings.addAll(indexer.getTermPostings(term));
-        });
-
+        }
         results.add(scoringAlgorithm.computeScores(query_id, allPostings));
     }
 
-    //BufferdWriter mais eficiente
-    //ver com prof espaços??? ou tudo seguido??
     @Override
     public void saveToFile(String filename) {
         try {

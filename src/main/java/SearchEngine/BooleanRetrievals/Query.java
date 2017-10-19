@@ -1,6 +1,5 @@
 package SearchEngine.BooleanRetrievals;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -17,7 +16,6 @@ public class Query {
         return query_id;
     }
 
-    //mudar para unmodifiable??
     public Map<Integer, Integer> getDoc_scores() {
         return doc_scores;
     }
@@ -45,6 +43,4 @@ public class Query {
     public String toString() {
         return "query_id=" + query_id;
     }
-
-
 }

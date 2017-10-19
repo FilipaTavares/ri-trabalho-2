@@ -1,47 +1,42 @@
 import IndexerEngine.tokenizers.Tokenizer;
 import SearchEngine.BooleanRetrievals.BooleanRetrieval;
-import SearchEngine.BooleanRetrievals.BooleanRetrievalOR;
+import SearchEngine.BooleanRetrievals.DisjunctiveBooleanRetrieval;
 import SearchEngine.IndexReader.IndexReader;
 import IndexerEngine.indexer.Indexer;
-import IndexerEngine.tokenizers.SimpleTokenizer;
+import SearchEngine.QueryProcessor;
 import SearchEngine.ScoringAlgorithms.FrequencyOfQueryWords;
 import SearchEngine.ScoringAlgorithms.NumberOfQueryWords;
 import SearchEngine.ScoringAlgorithms.ScoringAlgorithm;
 import net.sourceforge.argparse4j.ArgumentParsers;
 import net.sourceforge.argparse4j.impl.Arguments;
 import net.sourceforge.argparse4j.inf.ArgumentParser;
-import net.sourceforge.argparse4j.inf.ArgumentParserException;
 import net.sourceforge.argparse4j.inf.Namespace;
 
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
 
 public class DocumentSearcher {
     public static void main(String[] args) {
-
-        //falta args e talvez documentSearcher pipeline dependendo de como se fazem os args
         long start = System.currentTimeMillis();
 
         ArgumentParser parser = ArgumentParsers.newFor("DocumentSearcher").build()
-                .defaultHelp(true).description("A simple searcher that uses an index file.");
+                .defaultHelp(true).description("A simple searcher that uses an index file");
 
-        parser.addArgument("index_file").type(Arguments.fileType().verifyIsFile()).help("Index file");
-        parser.addArgument("queries_file").type(Arguments.fileType().verifyIsFile()).help("Queries file");
-        parser.addArgument("scoring_algorithm").choices("qwNumber", "qwFrequency", "all").setDefault("all")
-        .help("The scoring algorithm to be used");
-
-        parser.addArgument("outputFile").help("Output file to save results.\nIf scoring algorithm argument" +
-        " is set to 'all' then output filenames will be named as follow: scoringclassname_outputFile, " +
-                "scoringclassname_outputFile...");
+        parser.addArgument("<indexfile>").type(Arguments.fileType().verifyIsFile())
+                .help("Index file");
+        parser.addArgument("<queriesfile>").type(Arguments.fileType().verifyIsFile())
+                .help("Queries file");
+        parser.addArgument("<scoring_algorithm>").metavar("<scoring_algorithm>").choices("qwNumber",
+                "qwFrequency").setDefault("qwNumber").help("The scoring algorithm to be used given the " +
+                "following choices:\nqwNumber - score based on number of query words in the document.\nqwFrequency - " +
+                "score based on frequency of query words in the document");
+        parser.addArgument("<outputfile>").help("Output file to save results");
 
         Namespace ns = parser.parseArgsOrFail(args);
+        System.out.println(ns);
 
-        String index_file = ns.getString("index_file");
-
+        String index_file = ns.getString("<indexfile>");
         IndexReader indexReader = new IndexReader();
         Indexer indexer = indexReader.readIndex(index_file);
 
@@ -63,78 +58,36 @@ public class DocumentSearcher {
 
         System.out.println(indexer.size());
 
-        String queries_file = ns.getString("queries_file");
-        String scoring_algorithm = ns.getString("scoring_algorithm");
-        String output_file = ns.getString("outputFile");
+        String queries_file = ns.getString("<queriesfile>");
+        String scoring_algorithm = ns.getString("<scoring_algorithm>");
+        String output_file = ns.getString("<outputfile>");
 
-        BooleanRetrieval booleanRetrieval = new BooleanRetrievalOR();
+        BooleanRetrieval booleanRetrieval = new DisjunctiveBooleanRetrieval();
         booleanRetrieval.setIndexer(indexer);
         booleanRetrieval.setTokenizer(tokenizer);
 
-        ScoringAlgorithm scoringAlgorithm;
+        ScoringAlgorithm scoringAlgorithm = null;
+        QueryProcessor processor = new QueryProcessor();
         switch(scoring_algorithm){
             case "qwNumber":
                 scoringAlgorithm = new NumberOfQueryWords();
-                booleanRetrieval.setScoringAlgorithm(scoringAlgorithm);
-                executeWithOneScoring(booleanRetrieval, queries_file, output_file);
                 break;
 
             case "qwFrequency":
                 scoringAlgorithm = new FrequencyOfQueryWords();
-                booleanRetrieval.setScoringAlgorithm(scoringAlgorithm);
-                executeWithOneScoring(booleanRetrieval, queries_file, output_file);
                 break;
 
-            case "all":
-                executeWithAllScoring(booleanRetrieval, queries_file, output_file);
-                break;
             default:
+                System.err.println("Scoring algorithm not recognized");
+                System.exit(1);
                 break;
         }
-        //Criar interface QueryReader??
-        //Alterar
+
+        booleanRetrieval.setScoringAlgorithm(scoringAlgorithm);
+        processor.processQueries(queries_file, booleanRetrieval, output_file);
 
         long elapsedTime = System.currentTimeMillis() - start;
         System.out.println("Execution time in ms: " + elapsedTime);
-    }
-
-    public static void executeWithOneScoring(BooleanRetrieval booleanRetrieval, String queries_file,
-                                             String outputFile) {
-        try {
-            final int[] query_id = {1};
-
-            Files.lines(Paths.get(queries_file)).forEach(line ->
-                    booleanRetrieval.retrieve(query_id[0]++, line));
-            booleanRetrieval.saveToFile(outputFile);
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.exit(1);
-        }
-    }
-
-    public static void executeWithAllScoring(BooleanRetrieval booleanRetrieval, String queries_file,
-                                             String outputFile) {
-        List<String> queries = null;
-        try {
-            queries = Files.readAllLines(Paths.get(queries_file));
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.exit(1);
-        }
-
-        List<ScoringAlgorithm> scorings = new ArrayList<>();
-        scorings.add(new NumberOfQueryWords());
-        scorings.add(new FrequencyOfQueryWords());
-
-        for (ScoringAlgorithm scoring : scorings) {
-            int query_id = 1;
-            booleanRetrieval.setScoringAlgorithm(scoring);
-            for (String query: queries){
-                booleanRetrieval.retrieve(query_id++, query);
-            }
-            booleanRetrieval.saveToFile(scoring.getClass().getSimpleName() + "_" + outputFile);
-            booleanRetrieval.reset();
-        }
     }
 }
 
