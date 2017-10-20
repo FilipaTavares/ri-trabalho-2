@@ -1,4 +1,4 @@
-package SearchEngine.BooleanRetrievals;
+package SearchEngine.QueryProcessing;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -1,9 +1,9 @@
-import IndexerEngine.tokenizers.Tokenizer;
-import SearchEngine.BooleanRetrievals.BooleanRetrieval;
-import SearchEngine.BooleanRetrievals.DisjunctiveBooleanRetrieval;
-import SearchEngine.IndexReader.IndexReader;
 import IndexerEngine.indexer.Indexer;
-import SearchEngine.QueryProcessor;
+import IndexerEngine.tokenizers.Tokenizer;
+import SearchEngine.IndexReader.IndexReader;
+import SearchEngine.QueryProcessing.BooleanRetrieval;
+import SearchEngine.QueryProcessing.DisjunctiveBooleanRetrieval;
+import SearchEngine.QueryProcessing.QueryProcessor;
 import SearchEngine.ScoringAlgorithms.FrequencyOfQueryWords;
 import SearchEngine.ScoringAlgorithms.NumberOfQueryWords;
 import SearchEngine.ScoringAlgorithms.ScoringAlgorithm;
@@ -11,10 +11,6 @@ import net.sourceforge.argparse4j.ArgumentParsers;
 import net.sourceforge.argparse4j.impl.Arguments;
 import net.sourceforge.argparse4j.inf.ArgumentParser;
 import net.sourceforge.argparse4j.inf.Namespace;
-
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 
 public class DocumentSearcher {
     public static void main(String[] args) {
@@ -34,7 +30,6 @@ public class DocumentSearcher {
         parser.addArgument("<outputfile>").help("Output file to save results");
 
         Namespace ns = parser.parseArgsOrFail(args);
-        System.out.println(ns);
 
         String index_file = ns.getString("<indexfile>");
         IndexReader indexReader = new IndexReader();
@@ -55,8 +50,6 @@ public class DocumentSearcher {
             System.err.println("Tokenizer instantiation failed " + tokenizerClassName + e);
             System.exit(1);
         }
-
-        System.out.println(indexer.size());
 
         String queries_file = ns.getString("<queriesfile>");
         String scoring_algorithm = ns.getString("<scoring_algorithm>");

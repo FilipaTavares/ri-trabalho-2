@@ -3,6 +3,10 @@ import IndexerEngine.corpusReaders.CranfieldReader;
 import IndexerEngine.indexer.Indexer;
 import IndexerEngine.tokenizers.Tokenizer;
 import Pipelines.DocumentIndexerPipeline;
+import net.sourceforge.argparse4j.ArgumentParsers;
+import net.sourceforge.argparse4j.impl.Arguments;
+import net.sourceforge.argparse4j.inf.ArgumentParser;
+import net.sourceforge.argparse4j.inf.Namespace;
 
 import java.io.File;
 import java.io.IOException;
@@ -23,24 +27,29 @@ public class DocumentIndexer {
     public static void main(String[] args) throws IOException {
         long start = System.currentTimeMillis();
 
-        //ALTERAR PARA TER HELP E MOSTRAR NOMES DE TOKENIZERS
+        ArgumentParser parser = ArgumentParsers.newFor("DocumentIndexer").build()
+                .defaultHelp(true).description("A simple indexer");
 
-        if (args.length != 3) {
-            System.err.println("REQUIRED ARGUMENTS: <directoryForFiles> <tokenizerClassName> " +
-                    "<outputFile>");
-            System.exit(1);
-        }
+        parser.addArgument("<directoryForFiles>").type(Arguments.fileType().verifyIsDirectory())
+                .help("Corpus directory");
+        parser.addArgument("<tokenizerClassName>").metavar("<tokenizerClassName>").choices("SimpleTokenizer",
+                "ComplexTokenizer").help("The tokenizer to be used given the following choices:\n" +
+                "SimpleTokenizer  - splits on whitespace, lowercases tokens, removes all non-alphabetic characters" +
+                "and keeps only terms with 3 or more characters." +
+                "ComplexTokenizer - splits the text on a sequence of one or more non alphanumeric characters and" +
+                "that have adjacent digits and non-digits." +
+                "Uses a stopword list and an english stemmer");
+
+
+        parser.addArgument("<outputFile>").help("Output file to save results");
+
+        Namespace ns = parser.parseArgsOrFail(args);
 
         CorpusReader corpusReader = new CranfieldReader();
         Indexer indexer = new Indexer();
-        File directory = new File(args[0]);
+        File directory = new File(ns.getString("<directoryForFiles>"));
 
-        if (!(directory.exists() && directory.isDirectory())) {
-            System.err.println("No such directory " + args[0]);
-            System.exit(1);
-        }
-
-        String tokenizerClassName = args[1];
+        String tokenizerClassName = ns.getString("<tokenizerClassName>");
         Tokenizer tokenizer = null;
         Class tokenizerClass;
 
@@ -57,7 +66,7 @@ public class DocumentIndexer {
         }
 
         DocumentIndexerPipeline indexerPipeline = new DocumentIndexerPipeline(directory, corpusReader, tokenizer,
-                indexer, args[2]);
+                indexer, ns.getString("<outputFile>"));
 
         indexerPipeline.execute();
 

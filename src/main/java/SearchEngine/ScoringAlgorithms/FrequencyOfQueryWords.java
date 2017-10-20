@@ -1,7 +1,7 @@
 package SearchEngine.ScoringAlgorithms;
 
 import IndexerEngine.indexer.Posting;
-import SearchEngine.BooleanRetrievals.Query;
+import SearchEngine.QueryProcessing.Query;
 
 import java.util.List;
 

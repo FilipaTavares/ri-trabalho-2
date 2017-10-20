@@ -1,10 +1,11 @@
-package SearchEngine.BooleanRetrievals;
+package SearchEngine.QueryProcessing;
 
 import IndexerEngine.indexer.Indexer;
 import IndexerEngine.tokenizers.Tokenizer;
 import SearchEngine.ScoringAlgorithms.ScoringAlgorithm;
 
-import java.util.*;
+import java.util.LinkedList;
+import java.util.List;
 
 public abstract class BooleanRetrieval {
     protected List<Query> results;

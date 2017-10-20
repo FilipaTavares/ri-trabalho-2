@@ -1,13 +1,13 @@
-package SearchEngine.BooleanRetrievals;
+package SearchEngine.QueryProcessing;
 
 import IndexerEngine.indexer.Posting;
+
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.LinkedList;
 import java.util.List;
 
 public class DisjunctiveBooleanRetrieval extends BooleanRetrieval {
@@ -16,7 +16,6 @@ public class DisjunctiveBooleanRetrieval extends BooleanRetrieval {
     public void retrieve(int query_id, String query) {
         List<String> terms = tokenizer.tokenize(query);
         List<Posting> allPostings = new ArrayList<>();
-
         for(String term : terms) {
             if (indexer.getTermPostings(term) != null)
                 allPostings.addAll(indexer.getTermPostings(term));
