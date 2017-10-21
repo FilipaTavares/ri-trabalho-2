@@ -55,10 +55,22 @@ public class Indexer {
         }
     }
 
+    /**
+     * Add to the index structure a new entry 
+     * 
+     * @param term word that appear in the document
+     * @param postings list of postings
+     */
     public void addToIndex(String term, List<Posting> postings) {
         invertedIndex.put(term, postings);
     }
 
+    /**
+     * Get the list of postings of the term
+     * 
+     * @param term word to obtain the list of postings
+     * @return list of postings of the term
+     */
     public List<Posting> getTermPostings(String term) {
         return invertedIndex.get(term);
     }
@@ -86,6 +98,7 @@ public class Indexer {
      * Save the resulting index to a file using the following format (one term per line): term,doc id:term freq, ...
      *
      * @param filename output file name
+     * @param tokenizerName tokenizer class name
      */
     public void saveToFile(String filename, String tokenizerName) {
         try {

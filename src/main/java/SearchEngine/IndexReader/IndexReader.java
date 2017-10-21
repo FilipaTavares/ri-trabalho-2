@@ -11,13 +11,29 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * Class that reads and creates the index structure from the file
+ * 
+ */
 public class IndexReader {
     private String tokenizerName;
 
+    /**
+     * Returns the tokenizer class name
+     * 
+     * @return tokenizer class name
+     */
     public String getTokenizerName() {
         return tokenizerName;
     }
 
+    /**
+     * Method that reads the index file, where the first line of the file correspond to the tokenizer class name and
+     * the remainder lines correspond to the index structure. At the end, is created the inverted index.
+     * 
+     * @param filename index filename
+     * @return a Indexer object that contains the index structure
+     */
     public Indexer readIndex(String filename) {
         Indexer indexer = new Indexer();
 

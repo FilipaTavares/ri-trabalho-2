@@ -12,6 +12,17 @@ import net.sourceforge.argparse4j.impl.Arguments;
 import net.sourceforge.argparse4j.inf.ArgumentParser;
 import net.sourceforge.argparse4j.inf.Namespace;
 
+/**
+ * <h2>Document Searcher</h2>
+ * Receives as arguments:
+ * <p>The index filename</p>
+ * <p>The queries filename</p>
+ * <p>The choise of the scoring algorithm</p>
+ * <p>The output filename to store de score of the documents of each query</p>
+ *
+ * @author Ana Filipa Tavares 76629
+ * @author Andreia Machado 76501
+ */
 public class DocumentSearcher {
     public static void main(String[] args) {
         long start = System.currentTimeMillis();

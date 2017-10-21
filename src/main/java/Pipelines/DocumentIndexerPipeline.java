@@ -8,6 +8,10 @@ import IndexerEngine.tokenizers.Tokenizer;
 import java.io.File;
 import java.util.List;
 
+/**
+ * Pipeline that execute the document indexer program
+ * 
+ */
 public class DocumentIndexerPipeline implements Pipeline{
     private File directory;
     private CorpusReader corpusReader;
@@ -24,6 +28,10 @@ public class DocumentIndexerPipeline implements Pipeline{
         this.outputFileName = outputFileName;
     }
 
+    /**
+     * Method that execute the main program of the document indexer
+     * 
+     */
     @Override
     public void execute() {
         File[] fList = directory.listFiles(File::isFile);

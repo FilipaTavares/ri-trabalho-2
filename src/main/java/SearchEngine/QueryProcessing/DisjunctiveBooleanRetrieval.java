@@ -10,8 +10,19 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
+/**
+ * Class that implements a disjunctive (OR) Boolean Retrieval model
+ * 
+ */
 public class DisjunctiveBooleanRetrieval extends BooleanRetrieval {
 
+    /**
+     * Method that combine all the terms of the query using the OR operator, where is obtained all the postings list of
+     * each term. At the end, is computed the score of the documents for that query.
+     * 
+     * @param query_id id of the query
+     * @param query content of the query
+     */
     @Override
     public void retrieve(int query_id, String query) {
         List<String> terms = tokenizer.tokenize(query);
@@ -23,6 +34,11 @@ public class DisjunctiveBooleanRetrieval extends BooleanRetrieval {
         results.add(scoringAlgorithm.computeScores(query_id, allPostings));
     }
 
+    /**
+     * Save the score of the documents to a file using the following format: query_id doc_id doc_score
+     * 
+     * @param filename name of the ouput file
+     */
     @Override
     public void saveToFile(String filename) {
         try {
