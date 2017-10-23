@@ -1,13 +1,10 @@
 package SearchEngine.QueryProcessing;
 
 import IndexerEngine.indexer.Posting;
-
-import java.io.BufferedWriter;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -21,28 +18,30 @@ public class DisjunctiveBooleanRetrieval extends BooleanRetrieval {
      * each term. At the end, is computed the score of the documents for that query.
      * 
      * @param query_id id of the query
-     * @param query content of the query
+     * @param query_text content of the query
      */
     @Override
-    public void retrieve(int query_id, String query) {
-        List<String> terms = tokenizer.tokenize(query);
-        List<Posting> allPostings = new ArrayList<>();
+    public void retrieve(int query_id, String query_text) {
+        List<String> terms = tokenizer.tokenize(query_text);
+        List<Posting> allPostings = new LinkedList<>();
         for(String term : terms) {
             if (indexer.getTermPostings(term) != null)
                 allPostings.addAll(indexer.getTermPostings(term));
         }
-        results.add(scoringAlgorithm.computeScores(query_id, allPostings));
+        Query query = new Query(query_id);
+        scoringAlgorithm.computeScores(query, allPostings);
+        results.add(query);
     }
 
     /**
-     * Save the score of the documents to a file using the following format: query_id doc_id doc_score
-     * 
-     * @param filename name of the ouput file
+     * Save the score of the documents to a file. The first column is the query id, the second is the doc id
+     * and the third the doc score
+     * @param filename output filename
      */
     @Override
     public void saveToFile(String filename) {
         try {
-            PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(filename)));
+            PrintWriter out = new PrintWriter(filename);
 
             results.sort(Comparator.comparingInt(Query::getQuery_id));
 
@@ -51,11 +50,12 @@ public class DisjunctiveBooleanRetrieval extends BooleanRetrieval {
 
                 query.getDoc_scores().entrySet().stream().sorted((o1, o2) -> o1.getValue().equals(o2.getValue()) ?
                         o1.getKey().compareTo(o2.getKey()) : o2.getValue().compareTo(o1.getValue())).
-                        forEach(entry -> out.write(id + " " + entry.getKey()+ " " + entry.getValue() + "\n"));
+                        forEach(entry -> out.printf("%-7d%-8d%d\n",id,entry.getKey(),entry.getValue()));
             }
             out.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            System.err.println("Error writing results to file");
+            System.exit(1);
         }
     }
 }

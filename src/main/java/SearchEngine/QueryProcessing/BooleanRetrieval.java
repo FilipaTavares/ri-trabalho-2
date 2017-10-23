@@ -4,12 +4,12 @@ import IndexerEngine.indexer.Indexer;
 import IndexerEngine.tokenizers.Tokenizer;
 import SearchEngine.ScoringAlgorithms.ScoringAlgorithm;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
 /**
  * Abstract class that contains a geral representation of the Boolean Retrieval model
- * 
  */
 public abstract class BooleanRetrieval {
     protected List<Query> results;
@@ -30,7 +30,7 @@ public abstract class BooleanRetrieval {
     public abstract void retrieve(int query_id, String query);
 
     /**
-     * Save the score of the documents to a file
+     * Saves the score of the documents for each query in a file
      * 
      * @param filename name of the ouput file
      */

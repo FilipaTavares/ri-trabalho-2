@@ -40,7 +40,6 @@ public class DocumentIndexer {
                 "that have adjacent digits and non-digits." +
                 "Uses a stopword list and an english stemmer");
 
-
         parser.addArgument("<outputFile>").help("Output file to save results");
 
         Namespace ns = parser.parseArgsOrFail(args);

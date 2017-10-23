@@ -3,17 +3,13 @@ package SearchEngine.IndexReader;
 import IndexerEngine.indexer.Indexer;
 import IndexerEngine.indexer.Posting;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
 /**
- * Class that reads and creates the index structure from the file
- * 
+ * Class that reads and creates the index structure from an index file
  */
 public class IndexReader {
     private String tokenizerName;
@@ -28,16 +24,15 @@ public class IndexReader {
     }
 
     /**
-     * Method that reads the index file, where the first line of the file correspond to the tokenizer class name and
-     * the remainder lines correspond to the index structure. At the end, is created the inverted index.
-     * 
+     * Method that reads the index file parsing the first line to save the tokenizer name used and the remaining lines
+     * to construct the index structure which is returned.
      * @param filename index filename
      * @return a Indexer object that contains the index structure
      */
     public Indexer readIndex(String filename) {
         Indexer indexer = new Indexer();
 
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(filename)))){
+        try (BufferedReader reader = new BufferedReader(new FileReader(filename))){
             String line;
 
             if ((line = reader.readLine()) != null)
@@ -68,7 +63,8 @@ public class IndexReader {
             }
 
         } catch (IOException e) {
-            e.printStackTrace();
+            System.err.println("Error reading index file");
+            System.exit(1);
         }
 
         return indexer;

@@ -9,8 +9,7 @@ import java.io.File;
 import java.util.List;
 
 /**
- * Pipeline that execute the document indexer program
- * 
+ * Pipeline that executes the document indexer program
  */
 public class DocumentIndexerPipeline implements Pipeline{
     private File directory;
@@ -29,8 +28,7 @@ public class DocumentIndexerPipeline implements Pipeline{
     }
 
     /**
-     * Method that execute the main program of the document indexer
-     * 
+     * Method that executes the document indexer pipeline
      */
     @Override
     public void execute() {
@@ -58,5 +56,46 @@ public class DocumentIndexerPipeline implements Pipeline{
         List<String> termsHigherDocFreq = indexer.getFirst10TermsWithHigherDocFreq();
         termsHigherDocFreq.forEach(System.out::println);
         System.out.println();
+    }
+
+    /**
+     * Sets the corpus directory to be used by the pipeline
+     * @param directory corpus directory
+     */
+    public void setDirectory(File directory) {
+        this.directory = directory;
+    }
+
+    /**
+     * Sets the corpus reader to be used by the pipeline
+     * @param corpusReader corpus reader
+     */
+    public void setCorpusReader(CorpusReader corpusReader) {
+        this.corpusReader = corpusReader;
+    }
+
+    /**
+     * Sets the tokenizer to be used by the pipeline
+     * @param tokenizer tokenizer
+     */
+    public void setTokenizer(Tokenizer tokenizer) {
+        this.tokenizer = tokenizer;
+    }
+
+    /**
+     * Sets the indexer to be used by the pipeline
+     * @param indexer indexer
+     */
+    public void setIndexer(Indexer indexer) {
+        this.indexer = indexer;
+    }
+
+    /**
+     * Sets the output filename to be used by the pipeline
+     * @param outputFileName output filename
+     */
+
+    public void setOutputFileName(String outputFileName) {
+        this.outputFileName = outputFileName;
     }
 }

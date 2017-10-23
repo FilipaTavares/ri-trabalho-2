@@ -17,8 +17,8 @@ import net.sourceforge.argparse4j.inf.Namespace;
  * Receives as arguments:
  * <p>The index filename</p>
  * <p>The queries filename</p>
- * <p>The choise of the scoring algorithm</p>
- * <p>The output filename to store de score of the documents of each query</p>
+ * <p>The choice of the scoring algorithm</p>
+ * <p>The output filename to store the score of the documents of each query</p>
  *
  * @author Ana Filipa Tavares 76629
  * @author Andreia Machado 76501
@@ -71,7 +71,6 @@ public class DocumentSearcher {
         booleanRetrieval.setTokenizer(tokenizer);
 
         ScoringAlgorithm scoringAlgorithm = null;
-        QueryProcessor processor = new QueryProcessor();
         switch(scoring_algorithm){
             case "qwNumber":
                 scoringAlgorithm = new NumberOfQueryWords();
@@ -88,6 +87,8 @@ public class DocumentSearcher {
         }
 
         booleanRetrieval.setScoringAlgorithm(scoringAlgorithm);
+
+        QueryProcessor processor = new QueryProcessor();
         processor.processQueries(queries_file, booleanRetrieval, output_file);
 
         long elapsedTime = System.currentTimeMillis() - start;
